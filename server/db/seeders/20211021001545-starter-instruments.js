@@ -1,5 +1,18 @@
 'use strict';
 
+const { Op } = require('sequelize');
+
+const instruments = [
+  { type: 'piano' },
+  { type: 'guitar' },
+  { type: 'drums' },
+  { type: 'bass' },
+  { type: 'violin' },
+  { type: 'cello' },
+  { type: 'trumpet' },
+  { type: 'saxophone' }
+]
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     /**
@@ -12,16 +25,7 @@ module.exports = {
      * }], {});
     */
    
-    await queryInterface.bulkInsert('Instruments', [
-      { type: 'piano' },
-      { type: 'guitar' },
-      { type: 'drums' },
-      { type: 'bass' },
-      { type: 'violin' },
-      { type: 'cello' },
-      { type: 'trumpet' },
-      { type: 'saxophone' }
-    ])
+    await queryInterface.bulkInsert('Instruments', instruments)
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -32,11 +36,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
 
-    await queryInterface.bulkDelete('Instruments', {
-      type: [
-        'piano', 'guitar', 'drums', 'bass', 
-        'violin', 'cello', 'trumpet', 'saxophone'
-      ]
-    })
+    await queryInterface.bulkDelete('Instruments', { [Op.or]: instruments })
   }
 };

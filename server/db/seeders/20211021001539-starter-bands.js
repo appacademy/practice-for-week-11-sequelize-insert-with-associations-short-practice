@@ -1,5 +1,15 @@
 'use strict';
 
+const { Op } = require('sequelize');
+
+const bands = [
+  { name: 'The Falling Box' },
+  { name: 'America The Piano' },
+  { name: 'Loved Autumn' },
+  { name: 'Playin Sound' },
+  { name: 'The King River' }
+];
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     /**
@@ -12,13 +22,7 @@ module.exports = {
      * }], {});
     */
    
-    await queryInterface.bulkInsert('Bands', [
-      { name: 'The Falling Box' },
-      { name: 'America The Piano' },
-      { name: 'Loved Autumn' },
-      { name: 'Playin Sound' },
-      { name: 'The King River' }
-    ])
+    await queryInterface.bulkInsert('Bands', bands)
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -29,11 +33,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
 
-    await queryInterface.bulkDelete('Bands', {
-      name: [
-        'The Falling Box', 'America The Piano', 'Loved Autumn', 'Playin Sound', 
-        'The King River'
-      ]
-    })
+    await queryInterface.bulkDelete('Bands', { [Op.or]: bands })
   }
 };

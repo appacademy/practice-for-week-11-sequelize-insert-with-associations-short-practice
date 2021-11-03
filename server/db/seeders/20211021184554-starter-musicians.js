@@ -1,72 +1,66 @@
 'use strict';
 
 const { Band } = require('../models');
-const {Op} = require('sequelize')
+const { Op } = require('sequelize');
+
+const bandMusicians = [
+  {
+    name: 'The Falling Box',
+    musicians: [
+      { firstName: 'Adam', lastName: 'Appleby' },
+      { firstName: 'Anton', lastName: 'Martinovic' },
+      { firstName: 'Wilson', lastName: 'Holt' }
+    ]
+  },
+  {
+    name: 'America The Piano',
+    musicians: [
+      { firstName: 'Marine', lastName: 'Sweet' },
+      { firstName: 'Georgette', lastName: 'Kubo' }
+    ]
+  },
+  {
+    name: 'Loved Autumn',
+    musicians: [
+      { firstName: 'Aurora', lastName: 'Hase' }
+    ]
+  },
+  {
+    name: 'Playin Sound',
+    musicians: [
+      { firstName: 'Trenton', lastName: 'Lesley' },
+      { firstName: 'Camila', lastName: 'Nenci' }
+    ]
+  },
+  {
+    name: 'The King River',
+    musicians: [
+      { firstName: 'Rosemarie', lastName: 'Affini' },
+      { firstName: 'Victoria', lastName: 'Cremonesi' }
+    ]
+  }
+]
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
-
-    // Capture references to bands to use in musician seeds
-    const fallingBox = await Band.findOne({
-      where: { name: 'The Falling Box' }
-    });
-    const americaPiano = await Band.findOne({
-      where: { name: 'America The Piano' }
-    });
-    const lovedAutumn = await Band.findOne({
-      where: { name: 'Loved Autumn' }
-    });
-    const playinSound = await Band.findOne({
-      where: { name: 'Playin Sound' }
-    });
-    const kingRiver = await Band.findOne({
-      where: { name: 'The King River' }
-    });
-
-    await queryInterface.bulkInsert('Musicians', [
-      { firstName: 'Adam', lastName: 'Appleby', bandId: fallingBox.id },
-      { firstName: 'Anton', lastName: 'Martinovic', bandId: fallingBox.id },
-      { firstName: 'Wilson', lastName: 'Holt', bandId: fallingBox.id },
-      { firstName: 'Marine', lastName: 'Sweet', bandId: americaPiano.id },
-      { firstName: 'Georgette', lastName: 'Kubo', bandId: americaPiano.id },
-      { firstName: 'Aurora', lastName: 'Hase', bandId: lovedAutumn.id },
-      { firstName: 'Trenton', lastName: 'Lesley', bandId: playinSound.id },
-      { firstName: 'Camila', lastName: 'Nenci', bandId: playinSound.id },
-      { firstName: 'Rosemarie', lastName: 'Affini', bandId: kingRiver.id },
-      { firstName: 'Victoria', lastName: 'Cremonesi', bandId: kingRiver.id },
-    ])
+    for(let bandIdx = 0; bandIdx < bandMusicians.length; bandIdx++){
+      const { name, musicians } = bandMusicians[bandIdx];
+      const band = await Band.findOne({ where: { name } });
+      for(let musicianIdx = 0; musicianIdx < musicians.length; musicianIdx++) {
+        const musician = musicians[musicianIdx];
+        await band.createMusician(musician);
+      }
+    }
   },
 
   down: async (queryInterface, Sequelize) => {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-
+    const musiciansList = bandMusicians.reduce(
+      (acc, band) => [...acc, ...band.musicians], 
+      []
+    );
+    
     await queryInterface.bulkDelete('Musicians', {
-      [Op.or]: [
-        { firstName: 'Adam', lastName: 'Appleby' },
-        { firstName: 'Anton', lastName: 'Martinovic' },
-        { firstName: 'Wilson', lastName: 'Holt' },
-        { firstName: 'Marine', lastName: 'Sweet' },
-        { firstName: 'Georgette', lastName: 'Kubo' },
-        { firstName: 'Aurora', lastName: 'Hase' },
-        { firstName: 'Trenton', lastName: 'Lesley' },
-        { firstName: 'Camila', lastName: 'Nenci' },
-        { firstName: 'Rosemarie', lastName: 'Affini' },
-        { firstName: 'Victoria', lastName: 'Cremonesi '}
-      ]
-    })
+      [Op.or]: musiciansList
+    });
   }
 };
