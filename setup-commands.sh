@@ -12,9 +12,9 @@ cp .env.example .env
 
 # Migrations and seeders
 
-dotenv npx sequelize db:migrate
+npx dotenv sequelize db:migrate
 
-dotenv npx sequelize db:seed:all
+npx dotenv sequelize db:seed:all
 
 echo "----- Tables Exist? -----"
 sqlite3 db/dev.db ".schema"
