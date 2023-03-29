@@ -5,10 +5,10 @@ associations.
 
 ## Getting started
 
-Download starter. 
+Download starter.
 
 Execute the __setup-commands.sh__ script from the root directory of this
-practice. 
+practice.
 
 ```shell
 sh setup-commands.sh
@@ -83,6 +83,9 @@ The response you receive should look similar to the following:
 You can also now see that your record shows up when you make a `GET` request to
 either the index `/bands` or the specific `Band` endpoint `/bands/1`.
 
+To test that the endpoint has been implemented correctly, a test file has been
+created for you. Run `npm test test/01-one-to-many-spec.js` in your terminal.
+All tests should pass if you have set up the endpoint correctly.
 
 ## Step 2: Connecting two existing records (Many-to-Many)
 
@@ -139,6 +142,9 @@ You can also now see that your association shows up when you make a `GET`
 request to either the index `/musicians` or the specific `Musician` endpoint
 `/musicians/1`.
 
+To test that the endpoint has been implemented correctly, a test file has been
+created for you. Run `npm test test/02-many-to-many-spec.js` in your terminal.
+All tests should pass if you have set up the endpoint correctly.
 
 ## Congratulations!
 
