@@ -151,6 +151,15 @@ All tests should pass if you have set up the endpoint correctly.
 You are now able to create records for associated data with **Sequelize**
 models.
 
+## Submission
+
+Submit your work. Make sure to delete the `node_modules` folders in
+__BOTH root and server directories__!!
+
+1. Delete the `node_modules` folder in the root directory
+2. Delete the `node_modules` folder in the __server__ directory
+3. Zip up the project folder
+4. Submit the zip file
 
 [band-musician-instrument-db-schema]: https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-11/practices/band-musician-instrument-db-schema.png
 [band-musician-instrument-db-diagram-info]: https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-11/practices/band-musician-instrument-db-diagram-info.txt
