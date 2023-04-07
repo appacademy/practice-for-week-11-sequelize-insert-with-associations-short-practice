@@ -1,44 +1,22 @@
-/* ---------------- This section must be at the top: ---------------- */
-delete require.cache[require.resolve('../server/config/database.js')];
-delete require.cache[require.resolve('../server/db/models')];
-delete require.cache[require.resolve('../server/app')];
-const path = require('path');
-const DB_TEST_FILE = 'db/' + path.basename(__filename, '.js') + '.db';
-process.env.DB_TEST_FILE = 'server/' + DB_TEST_FILE;
-/* ------------------------------------------------------------------ */
-
-const chai = require('chai');
-const chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
-let chaiHttp = require('chai-http');
-let server = require('../server/app');
-chai.use(chaiHttp);
+const { setupBefore, setupChai, removeTestDB, runSQLQuery } = require('./utils/test-utils');
+const chai = setupChai();
 const expect = chai.expect;
 
-const { resetDB, seedAllDB, removeTestDB } = require('./utils/test-utils');
-const { Musician, MusicianInstrument } = require('../server/db/models');
-
 describe('Step 2: Many-to-Many', () => {
-
-  before(async () => {
-    await resetDB(DB_TEST_FILE);
-    return await seedAllDB(DB_TEST_FILE);
-  });
-
-  after(async () => {
-    return await removeTestDB(DB_TEST_FILE);
-  });
+  let DB_TEST_FILE, SERVER_DB_TEST_FILE, models, server;
+  before(async () => ({ server, models, DB_TEST_FILE, SERVER_DB_TEST_FILE } = await setupBefore(__filename)));
+  after(async () => await removeTestDB(DB_TEST_FILE));
 
   describe('POST /musicians/:musicianId/instruments', () => {
     let adam;
     let beforeAdamInstruments;
 
     before(async () => {
-      adam = await Musician.findOne({
+      adam = await models.Musician.findOne({
         where: { firstName: "Adam" }
       });
 
-      beforeAdamInstruments = await MusicianInstrument.findAll({
+      beforeAdamInstruments = await models.MusicianInstrument.findAll({
         where: { musicianId: adam.id },
         order: [ ["instrumentId"] ]
       });
@@ -71,7 +49,7 @@ describe('Step 2: Many-to-Many', () => {
 
     it('connects the instruments to the musician through the join table', async () => {
 
-      const afterAdamInstruments = await MusicianInstrument.findAll({
+      const afterAdamInstruments = await models.MusicianInstrument.findAll({
         where: { musicianId: adam.id },
         order: [ ["instrumentId"] ]
       });

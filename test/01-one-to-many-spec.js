@@ -1,43 +1,21 @@
-/* ---------------- This section must be at the top: ---------------- */
-delete require.cache[require.resolve('../server/config/database.js')];
-delete require.cache[require.resolve('../server/db/models')];
-delete require.cache[require.resolve('../server/app')];
-const path = require('path');
-const DB_TEST_FILE = 'db/' + path.basename(__filename, '.js') + '.db';
-process.env.DB_TEST_FILE = 'server/' + DB_TEST_FILE;
-/* ------------------------------------------------------------------ */
-
-const chai = require('chai');
-const chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
-let chaiHttp = require('chai-http');
-let server = require('../server/app');
-chai.use(chaiHttp);
+const { setupBefore, setupChai, removeTestDB, runSQLQuery } = require('./utils/test-utils');
+const chai = setupChai();
 const expect = chai.expect;
 
-const { resetDB, seedAllDB, removeTestDB } = require('./utils/test-utils');
-const { Musician, Band } = require('../server/db/models');
-
 describe('Step 1: One-to-Many', () => {
-
-  before(async () => {
-    await resetDB(DB_TEST_FILE);
-    return await seedAllDB(DB_TEST_FILE);
-  });
-
-  after(async () => {
-    return await removeTestDB(DB_TEST_FILE);
-  });
+  let DB_TEST_FILE, SERVER_DB_TEST_FILE, models, server;
+  before(async () => ({ server, models, DB_TEST_FILE, SERVER_DB_TEST_FILE } = await setupBefore(__filename)));
+  after(async () => await removeTestDB(DB_TEST_FILE));
 
   describe('POST /bands/:bandId/musicians', () => {
     let band;
     let lastMusician;
 
     before(async () => {
-      band = await Band.findByPk(5);
+      band = await models.Band.findByPk(5);
       expect(band, "Something went wrong with seeding the test database").to.not.be.null;
 
-      lastMusician = await Musician.create({
+      lastMusician = await models.Musician.create({
         firstName: 'Last musician for The King River',
         lastName: 'last musician created before post request',
         bandId: band.id,
@@ -72,7 +50,7 @@ describe('Step 1: One-to-Many', () => {
           expect(res.body.musician.bandId).to.eq(band.id);
         });
 
-        const newMusician =  await Musician.findByPk(lastMusician.id + 1, { raw: true })
+        const newMusician =  await models.Musician.findByPk(lastMusician.id + 1, { raw: true })
         expect(newMusician.firstName).to.equal('New musician for The King River');
         expect(newMusician.lastName).to.equal('new musician created');
         expect(newMusician.bandId).to.equal(band.id);
@@ -105,7 +83,7 @@ describe('Step 1: One-to-Many', () => {
           expect(res.body.musician.bandId).to.eq(band.id);
         });
 
-        const newMusician =  await Musician.findByPk(lastMusician.id + 2, { raw: true})
+        const newMusician =  await models.Musician.findByPk(lastMusician.id + 2, { raw: true})
         expect(newMusician.firstName).to.equal('One more musician for The King River');
         expect(newMusician.lastName).to.equal('another musician created');
         expect(newMusician.bandId).to.equal(band.id);
