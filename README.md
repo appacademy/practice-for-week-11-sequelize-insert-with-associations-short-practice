@@ -84,8 +84,8 @@ You can also now see that your record shows up when you make a `GET` request to
 either the index `/bands` or the specific `Band` endpoint `/bands/1`.
 
 To test that the endpoint has been implemented correctly, a test file has been
-created for you. Run `npm test test/01-one-to-many-spec.js` in your terminal.
-All tests should pass if you have set up the endpoint correctly.
+created for you. Run `npm test test/01-one-to-many-spec.js` in the __server__
+directory. All tests should pass if you have set up the endpoint correctly.
 
 ## Step 2: Connecting two existing records (Many-to-Many)
 
@@ -143,8 +143,8 @@ request to either the index `/musicians` or the specific `Musician` endpoint
 `/musicians/1`.
 
 To test that the endpoint has been implemented correctly, a test file has been
-created for you. Run `npm test test/02-many-to-many-spec.js` in your terminal.
-All tests should pass if you have set up the endpoint correctly.
+created for you. Run `npm test test/02-many-to-many-spec.js` in the __server__
+directory. All tests should pass if you have set up the endpoint correctly.
 
 ## Congratulations!
 
@@ -153,13 +153,11 @@ models.
 
 ## Submission
 
-Submit your work. Make sure to delete the `node_modules` folders in
-__BOTH root and server directories__!!
+Submit your work.
 
-1. Delete the `node_modules` folder in the root directory
-2. Delete the `node_modules` folder in the __server__ directory
-3. Zip up the project folder
-4. Submit the zip file
+1. Delete the `node_modules` folder in the __server__ directory
+2. Zip up the project folder
+3. Submit the zip file
 
 [band-musician-instrument-db-schema]: https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-11/practices/band-musician-instrument-db-schema.png
 [band-musician-instrument-db-diagram-info]: https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-11/practices/band-musician-instrument-db-diagram-info.txt

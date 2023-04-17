@@ -1,5 +1,3 @@
-npm install
-
 cd server
 
 # Remove the database file (if run multiple times - not in README)

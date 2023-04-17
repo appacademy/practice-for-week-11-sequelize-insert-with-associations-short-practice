@@ -84,7 +84,7 @@ module.exports.runSQLQuery = runSQLQuery;
 const runMigrations = async function (dbTestFile) {
   return new Promise((resolve, reject) => {
     const migrate = exec(
-      'cd server && npx sequelize-cli db:migrate',
+      'npx sequelize-cli db:migrate',
       envDBTestFile(dbTestFile),
       err => (err ? reject(err) : resolve())
     );
@@ -94,7 +94,7 @@ const runMigrations = async function (dbTestFile) {
 const removeTestDB = async function (dbTestFile) {
   return new Promise((resolve, reject) => {
     const deleteDB = exec(
-      `cd server && rm $DB_TEST_FILE || true`,
+      `rm $DB_TEST_FILE || true`,
       envDBTestFile(dbTestFile),
       err => (err ? reject(err): resolve())
     );
@@ -105,7 +105,7 @@ module.exports.removeTestDB = removeTestDB;
 const seedAllDB = async function (dbTestFile) {
   return new Promise((resolve, reject) => {
     const seedProcess = exec(
-      'cd server && npx sequelize-cli db:seed:all',
+      'npx sequelize-cli db:seed:all',
       envDBTestFile(dbTestFile),
       err => (err ? reject(err) : resolve())
     );
@@ -116,7 +116,7 @@ module.exports.seedAllDB = seedAllDB;
 module.exports.seedDBFile = async function (fileName, dbTestFile) {
   return new Promise((resolve, reject) => {
     const seedProcess = exec(
-      `cd server && npx sequelize-cli db:seed --seed ${fileName}`,
+      `npx sequelize-cli db:seed --seed ${fileName}`,
       envDBTestFile(dbTestFile),
       err => (err ? reject(err): resolve())
     );
@@ -126,7 +126,7 @@ module.exports.seedDBFile = async function (fileName, dbTestFile) {
 module.exports.undoAllSeeds = async function (dbTestFile) {
   return new Promise((resolve, reject) => {
     const seedProcess = exec(
-      `cd server && npx sequelize-cli db:seed:undo:all`,
+      `npx sequelize-cli db:seed:undo:all`,
       envDBTestFile(dbTestFile),
       err => (err ? reject(err): resolve())
     );
@@ -136,14 +136,14 @@ module.exports.undoAllSeeds = async function (dbTestFile) {
 module.exports.getAllSeederFiles = () => {
   const fs = require('fs');
   const path = require('path');
-  const seederFiles = fs.readdirSync(path.resolve(process.cwd(), 'server', 'db', 'seeders'));
+  const seederFiles = fs.readdirSync(path.resolve(process.cwd(), 'db', 'seeders'));
   return seederFiles.filter(file => file.endsWith('.js')).sort();
 };
 
 // all files in the /test/original-files folder will replace those files in the
-  // equivalent path in the server/ directory
+  // equivalent path in the root directory
 const replaceFilesScript = `
-destination_dir=./server
+destination_dir=.
 original_dir=./test/original-files
 find "$original_dir" -type f -exec bash -c 'cp -v $0 "\${0/$1/$2}"' {} $original_dir $destination_dir \\;
 `;
@@ -172,13 +172,12 @@ module.exports.setupBefore = async (filename) => {
   // for all server files in cache, delete it from the cache
   const path = require('path');
   DB_TEST_FILE = 'db/' + path.basename(filename, '.js') + '.db';
-  SERVER_DB_TEST_FILE = 'server/' + DB_TEST_FILE;
-  process.env.DB_TEST_FILE = SERVER_DB_TEST_FILE;
-  const server = require(path.resolve(process.cwd(), 'server', 'app'));
-  const models = require(path.resolve(process.cwd(), 'server', 'db', 'models'));
+  process.env.DB_TEST_FILE = DB_TEST_FILE;
+  const server = require(path.resolve(process.cwd(), 'app'));
+  const models = require(path.resolve(process.cwd(), 'db', 'models'));
   await resetDB(DB_TEST_FILE);
   await seedAllDB(DB_TEST_FILE);
-  return { server, models, DB_TEST_FILE, SERVER_DB_TEST_FILE };
+  return { server, models, DB_TEST_FILE };
 };
 
 module.exports.setupChai = () => {
