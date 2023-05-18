@@ -6,6 +6,8 @@ rm db/dev.db 2> /dev/null || true
 
 # Getting started
 
+npm install
+
 cp .env.example .env
 
 # Migrations and seeders
