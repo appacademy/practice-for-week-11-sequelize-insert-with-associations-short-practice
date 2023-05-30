@@ -1,6 +1,7 @@
 'use strict';
 
 const { Op } = require('sequelize');
+const { Band } = require('../models');
 
 const bands = [
   { name: 'The Falling Box' },
@@ -22,7 +23,12 @@ module.exports = {
      * }], {});
     */
    
-    await queryInterface.bulkInsert('Bands', bands)
+    try {
+      await Band.bulkCreate(bands, { validate: true });
+    } catch(err) {
+      console.error(err);
+      throw err;
+    }
   },
 
   down: async (queryInterface, Sequelize) => {

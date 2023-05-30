@@ -1,6 +1,7 @@
 'use strict';
 
 const { Op } = require('sequelize');
+const { Instrument } = require('../models');
 
 const instruments = [
   { type: 'piano' },
@@ -25,7 +26,12 @@ module.exports = {
      * }], {});
     */
    
-    await queryInterface.bulkInsert('Instruments', instruments)
+    try {
+      await Instrument.bulkCreate(instruments, { validate: true});
+    } catch(err) {
+      console.error(err);
+      throw err;
+    };
   },
 
   down: async (queryInterface, Sequelize) => {
