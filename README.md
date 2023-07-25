@@ -134,7 +134,7 @@ The response you receive should look similar to the following:
 
 ```json
 {
-  "message": "Associated Adam with instruments [3,5]."
+  "message": "Associated Adam with instruments 3,5."
 }
 ```
 
